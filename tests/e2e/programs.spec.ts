@@ -125,6 +125,8 @@ test("brand invitation can be accepted by the addressed creator", async ({ page 
   await login(page, creator.email);
   await page.goto("/creator/programas/invitaciones");
   await page.getByRole("button", { name: "Aceptar invitación" }).click();
+  await expect(page).toHaveURL(new RegExp(`/creator/programas/${programId}$`));
+  await expect(page.getByText("Ya sos parte de este programa.")).toBeVisible();
   await page.goto("/creator/programas/mis-programas");
   await expect(page.getByText(`Programa invitación ${suffix}`, { exact: true })).toBeVisible();
   await logout(page);

@@ -21,11 +21,14 @@ test("brand registration creates an organization and owner membership", async ({
   await page.getByLabel("Apellido").fill("Prueba");
   await page.getByRole("button", { name: "Crear espacio de marca" }).click();
   await expect(page).toHaveURL(/\/marca$/);
+  await expect(page.getByRole("heading", { name: "Tu panel de marca está listo" })).toBeVisible();
 
   await page.goto("/creator");
   await expect(page).toHaveURL(/\/marca$/);
+  await expect(page.getByRole("heading", { name: "Tu panel de marca está listo" })).toBeVisible();
   await page.goto("/admin");
   await expect(page).toHaveURL(/\/marca$/);
+  await expect(page.getByRole("heading", { name: "Tu panel de marca está listo" })).toBeVisible();
 
   await page.getByRole("button", { name: "Cerrar sesión" }).click();
   await page.getByLabel("Correo electrónico").fill(email);
@@ -47,11 +50,14 @@ test("creator registration creates a creator profile", async ({ page }) => {
   await page.getByLabel("Nombre público / nombre de creator").fill("Cami Crea");
   await page.getByRole("button", { name: "Crear perfil" }).click();
   await expect(page).toHaveURL(/\/creator$/);
+  await expect(page.getByRole("heading", { name: "Tu perfil de creator está listo" })).toBeVisible();
 
   await page.goto("/marca");
   await expect(page).toHaveURL(/\/creator$/);
+  await expect(page.getByRole("heading", { name: "Tu perfil de creator está listo" })).toBeVisible();
   await page.goto("/admin");
   await expect(page).toHaveURL(/\/creator$/);
+  await expect(page.getByRole("heading", { name: "Tu perfil de creator está listo" })).toBeVisible();
 
   await page.getByRole("button", { name: "Cerrar sesión" }).click();
   await page.getByLabel("Correo electrónico").fill(email);
