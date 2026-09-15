@@ -102,8 +102,7 @@ export async function saveShippingAddress(_state: ActionState, formData: FormDat
   const parsed = addressSchema.safeParse(Object.fromEntries(formData));
   if (!parsed.success) return { ...validationError(parsed.error.flatten().fieldErrors), message: getSamplingErrorMessage({ code: "22023", message: "invalid_address" }) };
   const supabase = await createClient();
-  const { error } = await supabase.from("creator_shipping_addresses").upsert({
-    creator_id: viewer.user.id,
+  const values = {
     recipient_name: parsed.data.recipientName,
     street: parsed.data.street,
     street_number: parsed.data.streetNumber,
@@ -114,7 +113,16 @@ export async function saveShippingAddress(_state: ActionState, formData: FormDat
     country: parsed.data.country,
     phone: parsed.data.phone,
     additional_info: parsed.data.additionalInfo,
-  });
+  };
+  const { data: existing, error: readError } = await supabase
+    .from("creator_shipping_addresses")
+    .select("creator_id")
+    .eq("creator_id", viewer.user.id)
+    .maybeSingle();
+  if (readError) return { status: "error", message: getSamplingErrorMessage(readError) };
+  const { error } = existing
+    ? await supabase.from("creator_shipping_addresses").update(values).eq("creator_id", viewer.user.id)
+    : await supabase.from("creator_shipping_addresses").insert({ creator_id: viewer.user.id, ...values });
   if (error) return { status: "error", message: getSamplingErrorMessage(error) };
   redirect(`/creator/programas/${parsed.data.programId}/sampling`);
 }
