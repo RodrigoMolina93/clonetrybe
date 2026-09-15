@@ -140,7 +140,9 @@ test("brand to creator application and membership journey", async ({ page }) => 
 
   await login(page, creator.email);
   await page.goto(`/creator/programas/${programId}/sampling`);
-  await expect(page.getByText(`AR-${suffix}`, { exact: true })).toBeVisible();
+  await expect(
+    page.getByText(`Número de seguimiento: AR-${suffix}`, { exact: true }),
+  ).toBeVisible();
   await page.getByRole("button", { name: "Me llegó" }).click();
   await expect(page.getByText("Recibido", { exact: true }).last()).toBeVisible();
   await page.getByText("Reportar un problema", { exact: true }).click();
@@ -154,6 +156,8 @@ test("brand to creator application and membership journey", async ({ page }) => 
   await page.goto(`/marca/programas/${programId}/sampling?view=requests&status=ISSUE`);
   await expect(page.getByText("El paquete llegó dañado.", { exact: true })).toBeVisible();
   await page.getByRole("button", { name: "Resolver y cancelar" }).click();
+  await expect(page.getByText("Todavía no hay solicitudes", { exact: true })).toBeVisible();
+  await page.getByRole("link", { name: "Canceladas", exact: true }).click();
   await expect(page.getByText("Cancelado", { exact: true }).last()).toBeVisible();
 });
 
