@@ -1,6 +1,6 @@
-# Nexo — Phase 1
+# Nexo — Phase 2
 
-Production-oriented creator commerce platform for Argentina. Phase 1 extends the validated identity and multi-tenant foundation with Programs, Briefs, creator applications, invitations, and memberships.
+Production-oriented creator commerce platform for Argentina. Phase 2 adds manual Product Sampling to the validated identity, organization, and Programs foundation.
 
 ## Development workflow
 
@@ -25,7 +25,7 @@ Local Supabase configuration remains available under `supabase/`, but Docker is 
 
 `/marca`, `/creator`, and `/admin` verify the authenticated role on the server. `src/proxy.ts` refreshes cookies and performs an optimistic unauthenticated redirect; server checks and RLS remain authoritative. The browser receives only the public Supabase URL and publishable key.
 
-The Programs domain lives in `src/features/programs`. Route components coordinate rendering only; Zod schemas validate inputs, repositories encapsulate reads, Server Actions authenticate every mutation, and PostgreSQL functions own transactional membership changes.
+The Programs and Sampling domains live in `src/features`. Route components coordinate rendering only; Zod schemas validate inputs, repositories encapsulate reads, Server Actions authenticate every mutation, and PostgreSQL functions own transactional membership and sampling state changes.
 
 ## Prerequisites
 
@@ -118,7 +118,7 @@ supabase db reset
 supabase test db
 ```
 
-The pgTAP suite keeps the Phase 0 isolation coverage and adds Program creation/discovery, cross-organization denial, application and invitation authorization, atomic/idempotent membership creation, and rejection of direct membership forgery.
+The pgTAP suite keeps the Phase 0 and Phase 1 isolation coverage and adds sampling product ownership, membership-gated requests, duplicate prevention, address isolation, controlled lifecycle transitions, issue resolution, and immutable tracking history.
 
 ### Remote staging E2E
 
@@ -128,7 +128,7 @@ Playwright does not start a local server when `PLAYWRIGHT_BASE_URL` is set:
 PLAYWRIGHT_BASE_URL=https://clonetrybe.vercel.app npm run test:e2e:staging
 ```
 
-The tests create unique synthetic Brand and Creator accounts. In addition to Phase 0 auth checks, they cover Program creation, Brief editing, activation, discovery, application, Brand acceptance, active membership, member-only Brief access, and a direct invitation flow. Automated registration requires staging email confirmation to be temporarily disabled; otherwise perform registration manually through the confirmation email flow.
+The tests create unique synthetic Brand and Creator accounts. The primary journey continues through Program membership, product creation, creator address, sample request, approval, preparation, shipment with tracking, receipt confirmation, issue reporting, and Brand resolution. Automated registration requires staging email confirmation to be temporarily disabled; otherwise perform registration manually through the confirmation email flow.
 
 For a browser-independent authorization check against the known staging project:
 
@@ -170,6 +170,16 @@ No custom domain or separate production database should be created yet.
 - Accepting an application or invitation creates or reactivates one unique membership in the same database transaction. If both are pending, accepting an application cancels the invitation; accepting an invitation withdraws the application.
 - Creator search and relationship summaries expose only public name and optional first/last name—never email.
 
+## Phase 2 sampling conventions
+
+- Sampling products belong to exactly one organization and Program. Variants are intentionally simple human-readable selectable combinations.
+- Product images use validated HTTPS URLs in this phase. Supabase Storage and image processing are deferred until their operational complexity is justified.
+- A creator can request only an active product and active variant while holding an `ACTIVE` Program membership and a complete Argentine shipping address.
+- The request stores an immutable JSON address snapshot. The current address remains private to the creator; brands receive a snapshot only through a restricted fulfillment function for actionable request states.
+- One active request per creator/product/variant is allowed. Rejected, received, or cancelled requests do not block a future request.
+- PostgreSQL RPCs lock the request row, validate every lifecycle transition, update the current status, and append an immutable tracking event in one transaction.
+- Issues may be reported after shipment or receipt. Resolution is explicit: cancel the request or register a replacement shipment.
+
 ## Deferred scope
 
-Sampling, Cloudflare Stream, content submissions, Meta APIs and attribution, Shopify/Tiendanube, Mercado Pago, earnings, ledger, settlements, payments, Resend, AI, and chat are intentionally not implemented.
+Content submissions, Cloudflare Stream, Meta APIs and attribution, Shopify/Tiendanube, courier and inventory integrations, Mercado Pago, earnings, ledger, settlements, payments, Resend, AI, and chat are intentionally not implemented.

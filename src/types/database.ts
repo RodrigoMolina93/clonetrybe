@@ -43,6 +43,62 @@ export type Database = {
           },
         ]
       }
+      creator_shipping_addresses: {
+        Row: {
+          additional_info: string | null
+          apartment: string | null
+          city: string
+          country: string
+          created_at: string
+          creator_id: string
+          phone: string | null
+          postal_code: string
+          province: string
+          recipient_name: string
+          street: string
+          street_number: string
+          updated_at: string
+        }
+        Insert: {
+          additional_info?: string | null
+          apartment?: string | null
+          city: string
+          country?: string
+          created_at?: string
+          creator_id: string
+          phone?: string | null
+          postal_code: string
+          province: string
+          recipient_name: string
+          street: string
+          street_number: string
+          updated_at?: string
+        }
+        Update: {
+          additional_info?: string | null
+          apartment?: string | null
+          city?: string
+          country?: string
+          created_at?: string
+          creator_id?: string
+          phone?: string | null
+          postal_code?: string
+          province?: string
+          recipient_name?: string
+          street?: string
+          street_number?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "creator_shipping_addresses_creator_id_fkey"
+            columns: ["creator_id"]
+            isOneToOne: true
+            referencedRelation: "creator_profiles"
+            referencedColumns: ["user_id"]
+          },
+        ]
+      }
       organization_members: {
         Row: {
           created_at: string
@@ -422,6 +478,296 @@ export type Database = {
           },
         ]
       }
+      sample_issues: {
+        Row: {
+          brand_note: string | null
+          created_at: string
+          creator_id: string
+          description: string
+          id: string
+          issue_type: Database["public"]["Enums"]["sample_issue_type"]
+          resolved_at: string | null
+          sample_request_id: string
+          status: Database["public"]["Enums"]["sample_issue_status"]
+        }
+        Insert: {
+          brand_note?: string | null
+          created_at?: string
+          creator_id: string
+          description: string
+          id?: string
+          issue_type: Database["public"]["Enums"]["sample_issue_type"]
+          resolved_at?: string | null
+          sample_request_id: string
+          status?: Database["public"]["Enums"]["sample_issue_status"]
+        }
+        Update: {
+          brand_note?: string | null
+          created_at?: string
+          creator_id?: string
+          description?: string
+          id?: string
+          issue_type?: Database["public"]["Enums"]["sample_issue_type"]
+          resolved_at?: string | null
+          sample_request_id?: string
+          status?: Database["public"]["Enums"]["sample_issue_status"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sample_issues_creator_id_fkey"
+            columns: ["creator_id"]
+            isOneToOne: false
+            referencedRelation: "creator_profiles"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "sample_issues_request_creator_fkey"
+            columns: ["sample_request_id", "creator_id"]
+            isOneToOne: false
+            referencedRelation: "sample_requests"
+            referencedColumns: ["id", "creator_id"]
+          },
+        ]
+      }
+      sample_product_variants: {
+        Row: {
+          active: boolean
+          created_at: string
+          id: string
+          label: string
+          product_id: string
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          created_at?: string
+          id?: string
+          label: string
+          product_id: string
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          created_at?: string
+          id?: string
+          label?: string
+          product_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sample_product_variants_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "sample_products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      sample_products: {
+        Row: {
+          active: boolean
+          created_at: string
+          created_by: string
+          description: string | null
+          id: string
+          image_url: string | null
+          name: string
+          organization_id: string
+          program_id: string
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          created_at?: string
+          created_by: string
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          name: string
+          organization_id: string
+          program_id: string
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          created_at?: string
+          created_by?: string
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          name?: string
+          organization_id?: string
+          program_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sample_products_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sample_products_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sample_products_program_organization_fkey"
+            columns: ["program_id", "organization_id"]
+            isOneToOne: false
+            referencedRelation: "programs"
+            referencedColumns: ["id", "organization_id"]
+          },
+        ]
+      }
+      sample_requests: {
+        Row: {
+          approved_at: string | null
+          brand_note: string | null
+          cancelled_at: string | null
+          carrier_name: string | null
+          created_at: string
+          creator_id: string
+          creator_note: string | null
+          id: string
+          preparing_at: string | null
+          product_id: string
+          program_id: string
+          received_at: string | null
+          rejected_at: string | null
+          requested_at: string
+          shipped_at: string | null
+          shipping_address_snapshot: Json
+          status: Database["public"]["Enums"]["sample_request_status"]
+          tracking_number: string | null
+          tracking_url: string | null
+          updated_at: string
+          variant_id: string | null
+        }
+        Insert: {
+          approved_at?: string | null
+          brand_note?: string | null
+          cancelled_at?: string | null
+          carrier_name?: string | null
+          created_at?: string
+          creator_id: string
+          creator_note?: string | null
+          id?: string
+          preparing_at?: string | null
+          product_id: string
+          program_id: string
+          received_at?: string | null
+          rejected_at?: string | null
+          requested_at?: string
+          shipped_at?: string | null
+          shipping_address_snapshot: Json
+          status?: Database["public"]["Enums"]["sample_request_status"]
+          tracking_number?: string | null
+          tracking_url?: string | null
+          updated_at?: string
+          variant_id?: string | null
+        }
+        Update: {
+          approved_at?: string | null
+          brand_note?: string | null
+          cancelled_at?: string | null
+          carrier_name?: string | null
+          created_at?: string
+          creator_id?: string
+          creator_note?: string | null
+          id?: string
+          preparing_at?: string | null
+          product_id?: string
+          program_id?: string
+          received_at?: string | null
+          rejected_at?: string | null
+          requested_at?: string
+          shipped_at?: string | null
+          shipping_address_snapshot?: Json
+          status?: Database["public"]["Enums"]["sample_request_status"]
+          tracking_number?: string | null
+          tracking_url?: string | null
+          updated_at?: string
+          variant_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sample_requests_creator_id_fkey"
+            columns: ["creator_id"]
+            isOneToOne: false
+            referencedRelation: "creator_profiles"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "sample_requests_product_program_fkey"
+            columns: ["product_id", "program_id"]
+            isOneToOne: false
+            referencedRelation: "sample_products"
+            referencedColumns: ["id", "program_id"]
+          },
+          {
+            foreignKeyName: "sample_requests_program_id_fkey"
+            columns: ["program_id"]
+            isOneToOne: false
+            referencedRelation: "programs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sample_requests_variant_product_fkey"
+            columns: ["variant_id", "product_id"]
+            isOneToOne: false
+            referencedRelation: "sample_product_variants"
+            referencedColumns: ["id", "product_id"]
+          },
+        ]
+      }
+      sample_tracking_events: {
+        Row: {
+          actor_user_id: string
+          created_at: string
+          event_type: Database["public"]["Enums"]["sample_tracking_event_type"]
+          id: string
+          metadata: Json | null
+          sample_request_id: string
+        }
+        Insert: {
+          actor_user_id: string
+          created_at?: string
+          event_type: Database["public"]["Enums"]["sample_tracking_event_type"]
+          id?: string
+          metadata?: Json | null
+          sample_request_id: string
+        }
+        Update: {
+          actor_user_id?: string
+          created_at?: string
+          event_type?: Database["public"]["Enums"]["sample_tracking_event_type"]
+          id?: string
+          metadata?: Json | null
+          sample_request_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sample_tracking_events_actor_user_id_fkey"
+            columns: ["actor_user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sample_tracking_events_sample_request_id_fkey"
+            columns: ["sample_request_id"]
+            isOneToOne: false
+            referencedRelation: "sample_requests"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
@@ -443,6 +789,10 @@ export type Database = {
         Args: { first_name: string; last_name: string; public_name: string }
         Returns: undefined
       }
+      confirm_sample_received: {
+        Args: { p_request_id: string }
+        Returns: undefined
+      }
       get_creator_summaries: {
         Args: { p_creator_ids: string[] }
         Returns: {
@@ -452,9 +802,51 @@ export type Database = {
           public_name: string
         }[]
       }
+      get_sample_request_shipping_address: {
+        Args: { p_request_id: string }
+        Returns: {
+          additional_info: string
+          apartment: string
+          city: string
+          country: string
+          phone: string
+          postal_code: string
+          province: string
+          recipient_name: string
+          street: string
+          street_number: string
+        }[]
+      }
       invite_creator_to_program: {
         Args: { p_creator_id: string; p_program_id: string }
         Returns: string
+      }
+      report_sample_issue: {
+        Args: {
+          p_description: string
+          p_issue_type: Database["public"]["Enums"]["sample_issue_type"]
+          p_request_id: string
+        }
+        Returns: string
+      }
+      request_sample: {
+        Args: {
+          p_creator_note?: string
+          p_product_id: string
+          p_variant_id?: string
+        }
+        Returns: string
+      }
+      resolve_sample_issue: {
+        Args: {
+          p_brand_note?: string
+          p_carrier_name?: string
+          p_issue_id: string
+          p_resolution_status: Database["public"]["Enums"]["sample_request_status"]
+          p_tracking_number?: string
+          p_tracking_url?: string
+        }
+        Returns: undefined
       }
       respond_to_program_invitation: {
         Args: {
@@ -479,6 +871,17 @@ export type Database = {
           public_name: string
         }[]
       }
+      transition_sample_request: {
+        Args: {
+          p_brand_note?: string
+          p_carrier_name?: string
+          p_request_id: string
+          p_target_status: Database["public"]["Enums"]["sample_request_status"]
+          p_tracking_number?: string
+          p_tracking_url?: string
+        }
+        Returns: undefined
+      }
       withdraw_program_application: {
         Args: { p_application_id: string }
         Returns: undefined
@@ -502,6 +905,32 @@ export type Database = {
       program_membership_status: "ACTIVE" | "REMOVED"
       program_status: "DRAFT" | "ACTIVE" | "PAUSED" | "ENDED" | "ARCHIVED"
       program_visibility: "PRIVATE" | "PUBLIC"
+      sample_issue_status: "OPEN" | "RESOLVED"
+      sample_issue_type:
+        | "NOT_RECEIVED"
+        | "WRONG_PRODUCT"
+        | "WRONG_VARIANT"
+        | "DAMAGED"
+        | "OTHER"
+      sample_request_status:
+        | "REQUESTED"
+        | "APPROVED"
+        | "REJECTED"
+        | "PREPARING"
+        | "SHIPPED"
+        | "RECEIVED"
+        | "ISSUE"
+        | "CANCELLED"
+      sample_tracking_event_type:
+        | "REQUEST_CREATED"
+        | "REQUEST_APPROVED"
+        | "REQUEST_REJECTED"
+        | "PREPARING_STARTED"
+        | "SHIPPED"
+        | "RECEIVED_CONFIRMED"
+        | "ISSUE_REPORTED"
+        | "ISSUE_RESOLVED"
+        | "REQUEST_CANCELLED"
       user_type: "ADMIN" | "BRAND" | "CREATOR"
     }
     CompositeTypes: {
@@ -649,6 +1078,35 @@ export const Constants = {
       program_membership_status: ["ACTIVE", "REMOVED"],
       program_status: ["DRAFT", "ACTIVE", "PAUSED", "ENDED", "ARCHIVED"],
       program_visibility: ["PRIVATE", "PUBLIC"],
+      sample_issue_status: ["OPEN", "RESOLVED"],
+      sample_issue_type: [
+        "NOT_RECEIVED",
+        "WRONG_PRODUCT",
+        "WRONG_VARIANT",
+        "DAMAGED",
+        "OTHER",
+      ],
+      sample_request_status: [
+        "REQUESTED",
+        "APPROVED",
+        "REJECTED",
+        "PREPARING",
+        "SHIPPED",
+        "RECEIVED",
+        "ISSUE",
+        "CANCELLED",
+      ],
+      sample_tracking_event_type: [
+        "REQUEST_CREATED",
+        "REQUEST_APPROVED",
+        "REQUEST_REJECTED",
+        "PREPARING_STARTED",
+        "SHIPPED",
+        "RECEIVED_CONFIRMED",
+        "ISSUE_REPORTED",
+        "ISSUE_RESOLVED",
+        "REQUEST_CANCELLED",
+      ],
       user_type: ["ADMIN", "BRAND", "CREATOR"],
     },
   },

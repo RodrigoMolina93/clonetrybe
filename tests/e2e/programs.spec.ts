@@ -64,7 +64,7 @@ async function createProgram(page: Page, programName: string) {
 }
 
 test("brand to creator application and membership journey", async ({ page }) => {
-  test.setTimeout(120_000);
+  test.setTimeout(240_000);
   const suffix = `${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
   const programName = `Programa E2E ${suffix}`;
   const brandEmail = await registerBrand(page, suffix);
@@ -97,6 +97,13 @@ test("brand to creator application and membership journey", async ({ page }) => 
   await page.goto(`/marca/programas/${programId}/creadores`);
   await page.getByRole("button", { name: "Aceptar", exact: true }).click();
   await expect(page.getByText(creator.publicName, { exact: true }).last()).toBeVisible();
+  await page.getByRole("link", { name: "Sampling" }).click();
+  await page.getByRole("link", { name: "Agregar producto" }).click();
+  await page.getByLabel("Nombre del producto").fill(`Remera ${suffix}`);
+  await page.getByLabel("Descripción").fill("Remera exclusiva para el programa.");
+  await page.getByLabel("Variantes").fill("Negro / M\nBlanco / L");
+  await page.getByRole("button", { name: "Crear producto" }).click();
+  await expect(page.getByText(`Remera ${suffix}`, { exact: true })).toBeVisible();
   await logout(page);
 
   await login(page, creator.email);
@@ -106,6 +113,48 @@ test("brand to creator application and membership journey", async ({ page }) => 
   await page.goto(`/creator/programas/${programId}`);
   await expect(page.getByText("Brief de lanzamiento", { exact: true })).toBeVisible();
   await expect(page.getByText("Crear contenido original y respetar las fechas acordadas.", { exact: true })).toBeVisible();
+  await page.getByRole("link", { name: "Sampling" }).click();
+  await page.getByLabel("Nombre de quien recibe").fill("Clara Prueba");
+  await page.getByLabel("Calle").fill("Av. Corrientes");
+  await page.getByLabel("Altura").fill("1234");
+  await page.getByLabel("Código postal").fill("C1043AAZ");
+  await page.getByLabel("Ciudad").fill("CABA");
+  await page.getByLabel("Provincia").fill("Buenos Aires");
+  await page.getByRole("button", { name: "Guardar dirección" }).click();
+  await page.getByLabel("Variante").selectOption({ label: "Negro / M" });
+  await page.getByRole("button", { name: "Solicitar producto" }).click();
+  await expect(page.getByText("Solicitado", { exact: true }).last()).toBeVisible();
+  await logout(page);
+
+  await login(page, brandEmail);
+  await page.goto(`/marca/programas/${programId}/sampling?view=requests`);
+  await page.getByRole("button", { name: "Aprobar solicitud" }).click();
+  await expect(page.getByText("Aprobado", { exact: true }).last()).toBeVisible();
+  await page.getByRole("button", { name: "Marcar como preparando" }).click();
+  await page.getByLabel("Transportista").fill("Correo Argentino");
+  await page.getByLabel("Número de seguimiento").fill(`AR-${suffix}`);
+  await page.getByLabel("URL de seguimiento").fill("https://www.correoargentino.com.ar/formularios/e-commerce");
+  await page.getByRole("button", { name: "Marcar como enviado" }).click();
+  await expect(page.getByText("Enviado", { exact: true }).last()).toBeVisible();
+  await logout(page);
+
+  await login(page, creator.email);
+  await page.goto(`/creator/programas/${programId}/sampling`);
+  await expect(page.getByText(`AR-${suffix}`, { exact: true })).toBeVisible();
+  await page.getByRole("button", { name: "Me llegó" }).click();
+  await expect(page.getByText("Recibido", { exact: true }).last()).toBeVisible();
+  await page.getByText("Reportar un problema", { exact: true }).click();
+  await page.getByLabel("Tipo de problema").selectOption("DAMAGED");
+  await page.getByLabel("Contanos qué pasó").fill("El paquete llegó dañado.");
+  await page.getByRole("button", { name: "Enviar reporte" }).click();
+  await expect(page.getByText("Problema reportado", { exact: true }).last()).toBeVisible();
+  await logout(page);
+
+  await login(page, brandEmail);
+  await page.goto(`/marca/programas/${programId}/sampling?view=requests&status=ISSUE`);
+  await expect(page.getByText("El paquete llegó dañado.", { exact: true })).toBeVisible();
+  await page.getByRole("button", { name: "Resolver y cancelar" }).click();
+  await expect(page.getByText("Cancelado", { exact: true }).last()).toBeVisible();
 });
 
 test("brand invitation can be accepted by the addressed creator", async ({ page }) => {
