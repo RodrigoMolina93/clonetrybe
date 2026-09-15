@@ -3,7 +3,7 @@ import { LogOut } from "lucide-react";
 import { logout } from "@/features/auth/actions";
 import { getDictionary } from "@/lib/i18n";
 import { requireRole } from "@/services/auth-service";
-import type { UserType } from "@/types/database";
+import type { UserType } from "@/types/auth";
 import { Button } from "@/components/ui/button";
 
 export async function ApplicationShell({ role, children }: { role: UserType; children: ReactNode }) {

@@ -1,6 +1,6 @@
 import type { User } from "@supabase/supabase-js";
 import { createClient } from "@/lib/supabase/server";
-import type { UserType } from "@/types/database";
+import type { UserType } from "@/types/auth";
 
 export type Viewer = { user: User; userType: UserType; firstName: string | null; lastName: string | null };
 

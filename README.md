@@ -54,7 +54,7 @@ Committed migrations are the schema source of truth. Link and inspect before app
 
 ```bash
 supabase login
-supabase link --project-ref <staging-project-ref>
+supabase link --project-ref bwctmomuthziyjaumjep
 supabase migration list --linked
 supabase db push --dry-run
 supabase db push
@@ -123,7 +123,7 @@ The pgTAP suite verifies unauthenticated denial, creator privacy, organization i
 Playwright does not start a local server when `PLAYWRIGHT_BASE_URL` is set:
 
 ```bash
-PLAYWRIGHT_BASE_URL=https://your-assigned-vercel-url.vercel.app npm run test:e2e:staging
+PLAYWRIGHT_BASE_URL=https://clonetrybe.vercel.app npm run test:e2e:staging
 ```
 
 The tests create unique non-production Brand and Creator accounts, validate onboarding and login, verify protected-route redirects, and ensure roles cannot enter each other's application or `/admin`. Automated registration requires staging email confirmation to be temporarily disabled; otherwise perform registration manually through the confirmation email flow.
@@ -132,11 +132,11 @@ The tests create unique non-production Brand and Creator accounts, validate onbo
 
 After Vercel assigns the canonical URL, configure Supabase Authentication → URL Configuration:
 
-- Site URL: `https://your-assigned-vercel-url.vercel.app`
-- Redirect URL: `https://your-assigned-vercel-url.vercel.app/auth/confirm`
+- Site URL: `https://clonetrybe.vercel.app`
+- Redirect URL: `https://clonetrybe.vercel.app/auth/confirm`
 - Optional local redirect: `http://localhost:3000/auth/confirm`
 
-No wildcard redirect is required. The existing callback accepts the PKCE `code` flow and token-hash confirmation flow. Supabase's hosted email service is sufficient for limited staging tests; a custom email provider remains deferred.
+No wildcard redirect is required. The existing callback accepts the PKCE `code` flow and token-hash confirmation flow. Email confirmation is disabled in this staging project so the automated registration journeys can run; the callback remains ready if confirmation is enabled later. A custom email provider remains deferred.
 
 ## Vercel deployment
 

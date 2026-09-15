@@ -1,4 +1,4 @@
-import type { UserType } from "@/types/database";
+import type { UserType } from "@/types/auth";
 
 export function getHomeRoute(userType: UserType): "/admin" | "/marca" | "/creator" {
   if (userType === "ADMIN") return "/admin";

@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import { getHomeRoute, getOnboardingRoute } from "@/features/auth/routing";
 import { getViewer, hasCompletedOnboarding, type Viewer } from "@/repositories/viewer-repository";
-import type { UserType } from "@/types/database";
+import type { UserType } from "@/types/auth";
 
 export async function requireViewer(): Promise<Viewer> {
   const viewer = await getViewer();
