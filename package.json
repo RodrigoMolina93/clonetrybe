@@ -11,6 +11,7 @@
     "test": "vitest run",
     "test:e2e": "playwright test",
     "test:e2e:staging": "playwright test",
+    "test:integration:staging": "node --env-file-if-exists=.env.local tests/integration/staging-rls.mjs",
     "test:db": "supabase test db",
     "db:types:staging": "bash scripts/generate-staging-types.sh",
     "verify": "npm run typecheck && npm run lint && npm run test && npm run build"

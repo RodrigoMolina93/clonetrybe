@@ -1,6 +1,6 @@
-# Nexo — Phase 0
+# Nexo — Phase 1
 
-Production-oriented technical foundation for an Argentina-first creator commerce platform. Current scope is limited to identity, organizations, minimal onboarding, protected role shells, and tenant isolation.
+Production-oriented creator commerce platform for Argentina. Phase 1 extends the validated identity and multi-tenant foundation with Programs, Briefs, creator applications, invitations, and memberships.
 
 ## Development workflow
 
@@ -24,6 +24,8 @@ Local Supabase configuration remains available under `supabase/`, but Docker is 
 - Tailwind CSS 4 and a minimal set of owned shadcn/ui components.
 
 `/marca`, `/creator`, and `/admin` verify the authenticated role on the server. `src/proxy.ts` refreshes cookies and performs an optimistic unauthenticated redirect; server checks and RLS remain authoritative. The browser receives only the public Supabase URL and publishable key.
+
+The Programs domain lives in `src/features/programs`. Route components coordinate rendering only; Zod schemas validate inputs, repositories encapsulate reads, Server Actions authenticate every mutation, and PostgreSQL functions own transactional membership changes.
 
 ## Prerequisites
 
@@ -116,7 +118,7 @@ supabase db reset
 supabase test db
 ```
 
-The pgTAP suite verifies unauthenticated denial, creator privacy, organization isolation, and onboarding transactions.
+The pgTAP suite keeps the Phase 0 isolation coverage and adds Program creation/discovery, cross-organization denial, application and invitation authorization, atomic/idempotent membership creation, and rejection of direct membership forgery.
 
 ### Remote staging E2E
 
@@ -126,7 +128,15 @@ Playwright does not start a local server when `PLAYWRIGHT_BASE_URL` is set:
 PLAYWRIGHT_BASE_URL=https://clonetrybe.vercel.app npm run test:e2e:staging
 ```
 
-The tests create unique non-production Brand and Creator accounts, validate onboarding and login, verify protected-route redirects, and ensure roles cannot enter each other's application or `/admin`. Automated registration requires staging email confirmation to be temporarily disabled; otherwise perform registration manually through the confirmation email flow.
+The tests create unique synthetic Brand and Creator accounts. In addition to Phase 0 auth checks, they cover Program creation, Brief editing, activation, discovery, application, Brand acceptance, active membership, member-only Brief access, and a direct invitation flow. Automated registration requires staging email confirmation to be temporarily disabled; otherwise perform registration manually through the confirmation email flow.
+
+For a browser-independent authorization check against the known staging project:
+
+```bash
+npm run test:integration:staging
+```
+
+This script uses only the publishable key and refuses unknown Supabase project URLs. It creates uniquely named synthetic identities, validates the important RLS/RPC boundaries, and archives its Program; it never uses a service-role key or resets data.
 
 ## Supabase Auth staging configuration
 
@@ -150,6 +160,16 @@ Connect the GitHub repository and select `main` as the production branch. In thi
 
 No custom domain or separate production database should be created yet.
 
+## Phase 1 data conventions
+
+- Fixed ARS amounts use `bigint` minor units (centavos). UI values are parsed to minor units and formatting uses `es-AR`; PostgreSQL constraints remain authoritative.
+- Percentages use `numeric(5,2)`, never floating-point database types. Platform fee is explicitly stored and constrained to `1.50` during this phase.
+- Program lifecycle is enforced by a database trigger. Programs are archived instead of deleted.
+- Briefs are visible only to organization members, admins, and active Program members.
+- Applications and invitations remain history apart from controlled state changes. Membership is authoritative.
+- Accepting an application or invitation creates or reactivates one unique membership in the same database transaction. If both are pending, accepting an application cancels the invitation; accepting an invitation withdraws the application.
+- Creator search and relationship summaries expose only public name and optional first/last name—never email.
+
 ## Deferred scope
 
-Programs, briefs, invitations, applications, sampling, Cloudflare Stream, content submissions, Meta APIs and attribution, Mercado Pago, earnings, ledger, settlements, payments, Resend, AI, and chat are intentionally not implemented.
+Sampling, Cloudflare Stream, content submissions, Meta APIs and attribution, Shopify/Tiendanube, Mercado Pago, earnings, ledger, settlements, payments, Resend, AI, and chat are intentionally not implemented.
