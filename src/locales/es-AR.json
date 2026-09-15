@@ -1,0 +1,85 @@
+{
+  "metadata": {
+    "title": "Nexo",
+    "description": "Plataforma de comercio para creators y marcas"
+  },
+  "common": {
+    "productName": "Nexo",
+    "tagline": "Comercio para creators y marcas",
+    "email": "Correo electrónico",
+    "password": "Contraseña",
+    "firstName": "Nombre",
+    "lastName": "Apellido",
+    "loading": "Cargando…",
+    "logout": "Cerrar sesión",
+    "backToLogin": "Volver a iniciar sesión"
+  },
+  "auth": {
+    "loginTitle": "Ingresá a tu cuenta",
+    "loginDescription": "Usá tu correo y contraseña para continuar.",
+    "loginAction": "Ingresar",
+    "loginPending": "Ingresando…",
+    "registerTitle": "Creá tu cuenta",
+    "registerDescription": "Elegí cómo vas a usar la plataforma.",
+    "registerAction": "Crear cuenta",
+    "registerPending": "Creando cuenta…",
+    "noAccount": "¿Todavía no tenés cuenta?",
+    "hasAccount": "¿Ya tenés cuenta?",
+    "registerLink": "Registrate",
+    "loginLink": "Ingresá",
+    "brandOption": "Soy una marca",
+    "creatorOption": "Soy creator",
+    "accountType": "Tipo de cuenta",
+    "passwordHint": "Mínimo 8 caracteres, con letras y números.",
+    "confirmationTitle": "Revisá tu correo",
+    "confirmationDescription": "Te enviamos un enlace para confirmar tu cuenta. Después de confirmarla, vas a poder continuar con la configuración.",
+    "confirmationError": "No pudimos confirmar tu cuenta. El enlace puede haber vencido.",
+    "errors": {
+      "invalidCredentials": "El correo o la contraseña no son correctos.",
+      "emailNotConfirmed": "Confirmá tu correo antes de ingresar.",
+      "emailAlreadyRegistered": "Ya existe una cuenta con ese correo.",
+      "rateLimit": "Hiciste demasiados intentos. Esperá unos minutos.",
+      "generic": "No pudimos completar la operación. Intentá nuevamente.",
+      "required": "Este campo es obligatorio.",
+      "invalidEmail": "Ingresá un correo válido.",
+      "password": "Usá al menos 8 caracteres, con una letra y un número.",
+      "accountType": "Elegí un tipo de cuenta válido.",
+      "nameLength": "Ingresá entre 2 y 80 caracteres."
+    }
+  },
+  "onboarding": {
+    "brandTitle": "Configurá tu marca",
+    "brandDescription": "Necesitamos solo algunos datos para crear tu espacio de trabajo.",
+    "brandName": "Nombre de la marca",
+    "brandAction": "Crear espacio de marca",
+    "brandPending": "Creando espacio…",
+    "creatorTitle": "Configurá tu perfil",
+    "creatorDescription": "Completá los datos básicos de tu perfil de creator.",
+    "publicName": "Nombre público / nombre de creator",
+    "creatorAction": "Crear perfil",
+    "creatorPending": "Creando perfil…",
+    "error": "No pudimos guardar tus datos. Intentá nuevamente."
+  },
+  "dashboard": {
+    "brandEyebrow": "Espacio de marca",
+    "brandTitle": "Tu panel de marca está listo",
+    "brandDescription": "Desde acá vas a administrar tu organización. Las campañas y demás funciones llegarán en próximas fases.",
+    "creatorEyebrow": "Espacio de creator",
+    "creatorTitle": "Tu perfil de creator está listo",
+    "creatorDescription": "Este es tu espacio personal. Las oportunidades y entregas se incorporarán en próximas fases.",
+    "adminEyebrow": "Administración",
+    "adminTitle": "Panel de administración",
+    "adminDescription": "La estructura de acceso está lista. Las herramientas administrativas se implementarán más adelante.",
+    "emptyTitle": "Todavía no hay actividad",
+    "emptyDescription": "Cuando se habiliten nuevas funciones, las vas a encontrar en este panel.",
+    "account": "Cuenta"
+  },
+  "errors": {
+    "title": "Algo salió mal",
+    "description": "No pudimos cargar esta pantalla. Intentá nuevamente.",
+    "retry": "Reintentar",
+    "notFoundTitle": "Página no encontrada",
+    "notFoundDescription": "La página que buscás no existe o fue movida.",
+    "goHome": "Ir al inicio"
+  }
+}
