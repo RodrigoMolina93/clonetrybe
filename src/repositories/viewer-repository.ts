@@ -1,22 +1,27 @@
 import type { User } from "@supabase/supabase-js";
+import { cache } from "react";
 import { createClient } from "@/lib/supabase/server";
-import type { UserType } from "@/types/auth";
+import type { OrganizationRole } from "@/types/auth";
 
-export type Viewer = { user: User; userType: UserType; firstName: string | null; lastName: string | null };
+export type ViewerOrganization = { id: string; name: string; slug: string; logoUrl: string | null; role: OrganizationRole };
+export type Viewer = { user: User; firstName: string | null; lastName: string | null; organization: ViewerOrganization | null };
 
-export async function getViewer(): Promise<Viewer | null> {
+export const getViewer = cache(async (): Promise<Viewer | null> => {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return null;
-  const { data: profile } = await supabase.from("profiles").select("user_type, first_name, last_name").eq("id", user.id).single();
-  if (!profile) return null;
-  return { user, userType: profile.user_type, firstName: profile.first_name, lastName: profile.last_name };
-}
 
-export async function hasCompletedOnboarding(viewer: Viewer): Promise<boolean> {
-  if (viewer.userType === "ADMIN") return true;
-  const supabase = await createClient();
-  const table = viewer.userType === "BRAND" ? "organization_members" : "creator_profiles";
-  const { count } = await supabase.from(table).select("*", { count: "exact", head: true }).eq("user_id", viewer.user.id);
-  return (count ?? 0) > 0;
-}
+  const [{ data: profile }, { data: membership }] = await Promise.all([
+    supabase.from("profiles").select("first_name, last_name").eq("id", user.id).single(),
+    supabase.from("organization_members").select("organization_id, role").eq("user_id", user.id).order("created_at").limit(1).maybeSingle(),
+  ]);
+  if (!profile) return null;
+
+  let organization: ViewerOrganization | null = null;
+  if (membership) {
+    const { data } = await supabase.from("organizations").select("id, name, slug, logo_url").eq("id", membership.organization_id).single();
+    if (data) organization = { id: data.id, name: data.name, slug: data.slug, logoUrl: data.logo_url, role: membership.role };
+  }
+
+  return { user, firstName: profile.first_name, lastName: profile.last_name, organization };
+});

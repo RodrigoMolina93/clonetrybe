@@ -3,7 +3,7 @@ import { NextResponse, type NextRequest } from "next/server";
 import { getPublicEnv } from "@/lib/env";
 import type { Database } from "@/types/database";
 
-const protectedPrefixes = ["/marca", "/creator", "/admin", "/onboarding"];
+const protectedPrefixes = ["/app", "/onboarding"];
 
 export async function updateSession(request: NextRequest) {
   let response = NextResponse.next({ request });

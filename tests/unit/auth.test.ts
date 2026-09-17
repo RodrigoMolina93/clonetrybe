@@ -1,26 +1,25 @@
 import { describe, expect, it } from "vitest";
-import { brandOnboardingSchema, creatorOnboardingSchema, registerSchema } from "@/features/auth/schemas";
-import { getHomeRoute, getOnboardingRoute } from "@/features/auth/routing";
+import { onboardingSchema, organizationSettingsSchema, profileSettingsSchema, registerSchema } from "@/features/auth/schemas";
+import { homeRoute, onboardingRoute } from "@/features/auth/routing";
 
-describe("authentication foundation", () => {
-  it("does not allow self-registration as admin", () => {
-    expect(registerSchema.safeParse({ email: "admin@example.com", password: "Password1", userType: "ADMIN" }).success).toBe(false);
+describe("PUMM authentication and organization validation", () => {
+  it("registers a single account type without accepting legacy role fields", () => {
+    expect(registerSchema.safeParse({ email: "owner@example.com", password: "Password1" }).success).toBe(true);
+    expect(registerSchema.safeParse({ email: "owner@example.com", password: "weak" }).success).toBe(false);
   });
 
-  it("routes each role to its protected application", () => {
-    expect(getHomeRoute("BRAND")).toBe("/marca");
-    expect(getHomeRoute("CREATOR")).toBe("/creator");
-    expect(getHomeRoute("ADMIN")).toBe("/admin");
-    expect(getOnboardingRoute("BRAND")).toBe("/onboarding/marca");
-    expect(getOnboardingRoute("CREATOR")).toBe("/onboarding/creator");
+  it("uses the unified protected routes", () => {
+    expect(homeRoute).toBe("/app");
+    expect(onboardingRoute).toBe("/onboarding");
   });
 
-  it("validates the minimum brand onboarding data", () => {
-    expect(brandOnboardingSchema.safeParse({ brandName: "Marca", firstName: "Ana", lastName: "Paz" }).success).toBe(true);
-    expect(brandOnboardingSchema.safeParse({ brandName: "", firstName: "A", lastName: "" }).success).toBe(false);
+  it("validates organization onboarding", () => {
+    expect(onboardingSchema.safeParse({ organizationName: "PUMM Labs", firstName: "Ana", lastName: "Paz" }).success).toBe(true);
+    expect(onboardingSchema.safeParse({ organizationName: "", firstName: "A", lastName: "" }).success).toBe(false);
   });
 
-  it("validates the minimum creator onboarding data", () => {
-    expect(creatorOnboardingSchema.safeParse({ publicName: "Ana Crea", firstName: "Ana", lastName: "Paz" }).success).toBe(true);
+  it("validates settings updates", () => {
+    expect(profileSettingsSchema.safeParse({ firstName: "Ana", lastName: "Paz" }).success).toBe(true);
+    expect(organizationSettingsSchema.safeParse({ organizationId: crypto.randomUUID(), organizationName: "PUMM Labs" }).success).toBe(true);
   });
 });

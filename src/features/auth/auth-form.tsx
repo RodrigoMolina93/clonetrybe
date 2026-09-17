@@ -33,20 +33,6 @@ export function AuthForm({ mode, dictionary }: Props) {
         {!isLogin && <p className="text-sm text-muted-foreground">{auth.passwordHint}</p>}
         <FieldError errors={state.fieldErrors?.password} />
       </div>
-      {!isLogin && (
-        <fieldset className="space-y-3">
-          <legend className="text-sm font-medium">{auth.accountType}</legend>
-          <div className="grid gap-3 sm:grid-cols-2">
-            {(["BRAND", "CREATOR"] as const).map((value) => (
-              <label key={value} className="flex cursor-pointer items-center gap-3 rounded-lg border bg-background p-4 has-checked:border-primary has-checked:ring-2 has-checked:ring-primary/20">
-                <input type="radio" name="userType" value={value} required />
-                <span className="font-medium">{value === "BRAND" ? auth.brandOption : auth.creatorOption}</span>
-              </label>
-            ))}
-          </div>
-          <FieldError errors={state.fieldErrors?.userType} />
-        </fieldset>
-      )}
       {state.message && <Alert variant="destructive"><AlertDescription>{state.message}</AlertDescription></Alert>}
       <Button className="w-full" disabled={pending} type="submit">
         {pending ? (isLogin ? auth.loginPending : auth.registerPending) : (isLogin ? auth.loginAction : auth.registerAction)}

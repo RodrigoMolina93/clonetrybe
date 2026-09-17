@@ -1,13 +1,13 @@
 "use server";
 
 import { redirect } from "next/navigation";
-import { createClient } from "@/lib/supabase/server";
-import { getDictionary } from "@/lib/i18n";
 import { loginSchema, registerSchema } from "@/features/auth/schemas";
-import { getOnboardingRoute } from "@/features/auth/routing";
+import { onboardingRoute } from "@/features/auth/routing";
+import type { ActionState } from "@/features/auth/types";
+import { getDictionary } from "@/lib/i18n";
+import { createClient } from "@/lib/supabase/server";
 import { getViewer } from "@/repositories/viewer-repository";
 import { redirectViewerHome } from "@/services/auth-service";
-import type { ActionState } from "@/features/auth/types";
 
 const messages = getDictionary().auth.errors;
 
@@ -39,10 +39,10 @@ export async function register(_state: ActionState, formData: FormData): Promise
   const { data, error } = await supabase.auth.signUp({
     email: parsed.data.email,
     password: parsed.data.password,
-    options: { data: { user_type: parsed.data.userType }, emailRedirectTo: `${appUrl}/auth/confirm` },
+    options: { emailRedirectTo: `${appUrl}/auth/confirm` },
   });
   if (error) return { status: "error", message: authErrorMessage(error.code) };
-  redirect(data.session ? getOnboardingRoute(parsed.data.userType) : "/confirmacion");
+  redirect(data.session ? onboardingRoute : "/confirmacion");
 }
 
 export async function logout() {
